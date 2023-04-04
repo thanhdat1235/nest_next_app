@@ -8,10 +8,6 @@ const userService = {
   createUser: async (payload: RegisterDTO) => {
     return axios({
       url: REGISTER_URL,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
       method: "POST",
       data: payload,
     });
@@ -22,6 +18,7 @@ const userService = {
       url: LOGIN_URL,
       method: "POST",
       data: payload,
+      withCredentials:true
     });
   },
 

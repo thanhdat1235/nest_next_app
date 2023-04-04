@@ -5,8 +5,11 @@ import userService from "../src/services/userService/user.service";
 import PageWithLayoutType from "../src/types/pageWithLayout";
 import { ToastContainer, toast } from "react-toastify";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { create } from "../src/redux/userSlice";
 
 const CreateUser: FC = () => {
+  const dispatch = useDispatch()
   const {
     register,
     handleSubmit,
@@ -23,6 +26,7 @@ const CreateUser: FC = () => {
   const onSubmit = async (data: RegisterDTO) => {
     try {
       const newUser = await userService.createUser(data);
+      dispatch(create(data))
       toast.success("Hello bro. Chiến thôi :))", {
         position: "top-right",
         autoClose: 5000,

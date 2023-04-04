@@ -65,9 +65,7 @@ export class AuthService {
   }
 
   async getNewAccessToken(refreshToken: string) {
-    const tokenInfo = this.jwtService.decode(refreshToken);
-    console.log(tokenInfo);
-    
+    const tokenInfo = this.jwtService.decode(refreshToken);    
 
     const user = await this.UserService.findOne(tokenInfo['email']);
     if (!user) {
@@ -104,9 +102,9 @@ export class AuthService {
   public generateAccessToken(payload) {
     const access_token = this.jwtService.sign(payload, {
       secret: process.env.JWT_ACCESS_TOKEN_SECRET,
-      expiresIn: `${process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME}s`,
+      expiresIn: `${process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME}d`,
     });
-    const cookie = `Authentication=${access_token}; HttpOnly; Path=/; Max-Age=${process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME}`;
+    const cookie = `access=${access_token}; HttpOnly; Path=/; Max-Age=${process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME}d`;
     return {
       access_token,
       cookie,
@@ -119,9 +117,9 @@ export class AuthService {
   public generateRefeshToken(payload) {
     const refresh_token = this.jwtService.sign(payload, {
       secret: process.env.JWT_REFRESH_TOKEN_SECRET,
-      expiresIn: `${process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME}s`,
+      expiresIn: `${process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME}d`,
     });
-    const cookie = `Refresh=${refresh_token}; HttpOnly; Path=/; Max-Age=${process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME}`;
+    const cookie = `refresh=${refresh_token}; HttpOnly; Path=/; Max-Age=${process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME}d`;
     return {
       refresh_token,
       cookie,

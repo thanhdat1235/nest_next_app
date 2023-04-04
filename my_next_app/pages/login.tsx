@@ -5,6 +5,10 @@ import userService from "../src/services/userService/user.service";
 import PageWithLayoutType from "../src/types/pageWithLayout";
 import { ToastContainer, toast } from "react-toastify";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { setUser } from "../src/redux/userSlice";
+import authService from "../src/services/authService/authService";
+
 
 type SigninDTO = {
   email: string;
@@ -12,6 +16,7 @@ type SigninDTO = {
 };
 
 const Login: FC = () => {
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -24,10 +29,24 @@ const Login: FC = () => {
     },
   });
 
+  const getUser = async () => {
+    try {
+      const allUser = await authService.findAllUser();
+      console.log(allUser);
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+
   const onSubmit = async (data: SigninDTO) => {
     try {
       const user = await userService.signIn(data);
-      console.log(user);
+      dispatch(setUser(user.data))
+      const token: string | undefined =  user.headers.authorization || user.headers.Authorization
+      console.log(token);
+      localStorage.setItem("token", token ? token : "");
 
       toast.success("Hello bro. Chiến thôi :))", {
         position: "top-right",
@@ -143,6 +162,13 @@ const Login: FC = () => {
                 </a>
               </p>
             </form>
+            <button
+                type="button"
+                onClick={getUser}
+                className="w-full text-white bg-blue-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+              >
+                Sigin
+              </button>
             <ToastContainer
               position="top-right"
               autoClose={5000}
