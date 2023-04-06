@@ -1,11 +1,11 @@
 import axios from "axios";
-import { FIND_ALL_USER } from "../urlApi";
+import { FIND_ACTIVE_USER } from "../urlApi";
 import axiosService from "../../../config/axios/axios.config";
 
 const authService = {
-    findAllUser: async () => {
+    findActiveUser: async () => {
         return axiosService()({
-            url: FIND_ALL_USER,
+            url: FIND_ACTIVE_USER,
             method: "GET",
         })
     }

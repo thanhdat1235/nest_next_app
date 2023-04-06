@@ -1,5 +1,4 @@
 import React, { FC, useState } from "react";
-import { RegisterDTO } from "../src/interfaces/register.dto";
 import DefaultLayout from "../src/layouts/defautlt.layout";
 import userService from "../src/services/userService/user.service";
 import PageWithLayoutType from "../src/types/pageWithLayout";
@@ -8,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { setUser } from "../src/redux/userSlice";
 import authService from "../src/services/authService/authService";
+import  Router  from "next/router";
 
 
 type SigninDTO = {
@@ -29,16 +29,16 @@ const Login: FC = () => {
     },
   });
 
-  const getUser = async () => {
-    try {
-      const allUser = await authService.findAllUser();
-      console.log(allUser);
+  // const getUser = async () => {
+  //   try {
+  //     const allUser = await authService.findAllUser();
+  //     console.log(allUser);
       
-    } catch (error) {
-      console.log(error);
+  //   } catch (error) {
+  //     console.log(error);
       
-    }
-  }
+  //   }
+  // }
 
   const onSubmit = async (data: SigninDTO) => {
     try {
@@ -58,6 +58,7 @@ const Login: FC = () => {
         progress: undefined,
         theme: "light",
       });
+      Router.push('/')
     } catch (error) {
       console.log(error);
 
@@ -162,13 +163,13 @@ const Login: FC = () => {
                 </a>
               </p>
             </form>
-            <button
+            {/* <button
                 type="button"
                 onClick={getUser}
                 className="w-full text-white bg-blue-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               >
                 Sigin
-              </button>
+              </button> */}
             <ToastContainer
               position="top-right"
               autoClose={5000}

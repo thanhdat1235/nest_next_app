@@ -7,6 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { create } from "../src/redux/userSlice";
+import Router from "next/router";
 
 const CreateUser: FC = () => {
   const dispatch = useDispatch()
@@ -38,6 +39,7 @@ const CreateUser: FC = () => {
         theme: "light",
       });
       reset();
+      Router.push("/login");
     } catch (error) {
       toast.error("Ẩu rồi đó ba :((", {
         position: "top-right",

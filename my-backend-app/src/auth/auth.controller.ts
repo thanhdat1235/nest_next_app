@@ -29,9 +29,9 @@ export class AuthController {
   async login(@Request() req, @Response() response: ExResponse) {
     const res = await this.authService.login(req.user);
     
-    await this.cacheManager.set('acces_token', res.access_tokenCookie.access_token,  parseInt(process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME)*1000);
-    const token = await this.cacheManager.get('acces_token');
-    console.log(token);
+    // await this.cacheManager.set('acces_token', res.access_tokenCookie.access_token,  parseInt(process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME)*1000);
+    // const token = await this.cacheManager.get('acces_token');
+    // console.log(token);
     
     // response.cookie('refresh', res.refresh_tokenCookie.refresh_token, {httpOnly: true});
     // response.cookie('access', res.access_tokenCookie.access_token, {httpOnly: true});
@@ -39,7 +39,7 @@ export class AuthController {
     // req.res.setHeader('Authorization', res.access_tokenCookie.access_token);
     // console.log(response);
     
-    return response.json(res);
+    return response.json(res.user);
   }
 
   @UseGuards(JwtRefreshAuthGuard)

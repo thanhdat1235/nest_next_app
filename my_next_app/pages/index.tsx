@@ -1,8 +1,23 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import HomeLayout from "../src/layouts/home.layout";
 import PageWithLayoutType from "../src/types/pageWithLayout";
+import authService from "../src/services/authService/authService";
+import { useDispatch } from "react-redux";
+import { setUserActive } from "../src/redux/userSlice";
 
 const Home: FC = () => {
+  const [userActive, setUserActiveState] = useState();
+  const dispath = useDispatch();
+  
+  useEffect(() => {
+    findUserActive();
+  }, [])
+
+  const findUserActive = async () => {
+    const responseUser = await authService.findActiveUser();
+    setUserActiveState(responseUser.data)
+    dispath(setUserActive(responseUser.data));
+  }
   return (
     <div className="flex flex-col flex-auto h-full p-6">
       <div className="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-100 h-full p-4">

@@ -12,13 +12,39 @@ datasource db {
 }
 
 model User {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   username      String
-  email         String   @unique
+  email         String    @unique
   password      String
-  role          String   @default("user")
-  published     Boolean  @default(false)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  role          String    @default("member")
+  published     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   refresh_token String?
+  sender        Chat[]    @relation("sender")
+  receiver      Chat[]    @relation("receiver")
+  // group         ChatGroup @relation(name: "members", fields: [groupId], references: [id])
+  // groupId       String
+}
+
+model Chat {
+  id         String    @id @default(cuid())
+  messages   String?
+  createdAt  DateTime  @default(now())
+  sender     User      @relation(name: "sender", fields: [senderId], references: [id])
+  senderId   String
+  receiver   User      @relation(name: "receiver", fields: [receiverId], references: [id])
+  receiverId String
+  group      ChatGroup @relation(fields: [groupId], references: [id])
+  groupId    String
+}
+
+model ChatGroup {
+  id           String   @id @default(cuid())
+  groupName    String
+  groupAvartar String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now())
+  messages     Chat[]
+  // members       User[] @relation("members")
 }
