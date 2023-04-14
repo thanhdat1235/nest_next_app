@@ -47,7 +47,7 @@ export class AuthService {
     throw new HttpException('User not found', HttpStatus.NOT_FOUND);
   }
 
-  async login(user: User): Promise<DataResponse> {
+  async login(user: User): Promise<DataResponse> {    
     const dataSign = {
       email: user.email,
       username: user.username,

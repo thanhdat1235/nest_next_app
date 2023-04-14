@@ -1,6 +1,5 @@
 import { PrismaService } from './../prisma/prisma.service';
 import { HttpException, HttpStatus, Injectable, Param } from '@nestjs/common';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { User, Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
@@ -62,6 +61,22 @@ export class UserService {
       const user = await this.prisma.user.findUnique({
         where: {
           email: email,
+        },
+        include: {
+          avatar: true
+        }
+      });
+      return user;
+    } catch (error) {
+      throw new HttpException('User is not exist', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async findOneById(id: string): Promise<User> {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          id: id,
         },
       });
       return user;

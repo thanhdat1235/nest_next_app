@@ -55,7 +55,7 @@ const CreateUser: FC = () => {
   };
 
   const setStyleValidate = (name: string) =>
-    errors[name] ? { border: "1px solid red" } : {};
+    errors[name as keyof typeof errors] ? { border: "1px solid red" } : {};
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">

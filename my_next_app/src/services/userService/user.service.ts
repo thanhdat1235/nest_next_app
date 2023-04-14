@@ -2,7 +2,7 @@ import { RegisterDTO } from "./../../interfaces/register.dto";
 import { LoginDataDTO } from "../../interfaces/login.dto";
 import axiosService from "../../../config/axios/axios.config";
 import axios from "axios";
-import { LOGIN_URL, REGISTER_URL } from "../urlApi";
+import { LOGIN_URL, REGISTER_URL, UPDATE_USER_URL } from "../urlApi";
 
 const userService = {
   createUser: async (payload: RegisterDTO) => {
@@ -48,13 +48,13 @@ const userService = {
   //     });
   //   },
 
-  //   updateUser: async (params) => {
-  //     return axiosService()({
-  //       url: `${UPDATE_URL}${params.id}`,
-  //       method: "PUT",
-  //       data: params.data,
-  //     });
-  //   },
+    updateUser: async (payload: any) => {            
+      return axiosService()({
+        url: `${UPDATE_USER_URL}${payload.data.id}`,
+        method: "PUT",
+        data: payload.data,
+      });
+    },
 
   //   deleteById: async (params) => {
   //     return axiosService()({

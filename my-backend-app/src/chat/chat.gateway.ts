@@ -13,6 +13,19 @@ import { Socket, Server } from 'socket.io';
 import { UserService } from '../users/users.service';
 import { Prisma } from '@prisma/client';
 
+export interface IInformation {
+  id: number | string;
+  user_id: number | string | null;
+  status: boolean;
+  type: TypeInformation | null;
+  value: string;
+}
+
+export enum TypeInformation {
+  'socket_id' = 'socket_id',
+  'device_id' = 'device_id',
+}
+
 @WebSocketGateway(4002, { cors: true })
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
@@ -24,16 +37,15 @@ export class ChatGateway
   @WebSocketServer()
   server: Server;
   @SubscribeMessage('sendMessage')
-
   async getDataUserFromToken(client: Socket): Promise<Prisma.UserCreateInput> {
     const authToken: any = client.handshake.headers?.token;
-    
-    const decoded = this.jwtService.verify(authToken);
+
+    const decoded = this.jwtService.verify(authToken, {
+      secret: process.env.JWT_ACCESS_TOKEN_SECRET,
+    });
+
     try {
-      console.log(decoded);
       const user = await this.userService.findOne(decoded.email); // response to function
-      console.log(user);
-      
       return user;
     } catch (ex) {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
@@ -46,25 +58,29 @@ export class ChatGateway
   }
 
   afterInit(server: Server) {
-    console.log(server);
+    // console.log(server);
     //Do stuffs
   }
 
-  handleDisconnect(client: Socket) {    
+  handleDisconnect(client: Socket) {
     console.log(`Disconnected: ${client.id}`);
     //Do stuffs
   }
 
- async handleConnection(client: Socket, ...args: any[]) {
+  async handleConnection(client: Socket, ...args: any[]) {
     console.log(`Connected ${client.id}`);
-    const user: Prisma.UserCreateInput = await this.getDataUserFromToken(client);
-  
-    // const device = {
-    //   user_id: user.id,
-    //   type: TypeInformation.socket_id,
-    //   status: false,
-    //   value: client.id,
-    // };
+    const user: Prisma.UserCreateInput = await this.getDataUserFromToken(
+      client,
+    );    
+
+    const information = {
+      user_id: user.id, 
+      type: TypeInformation.socket_id,
+      status: false,
+      value: client.id,
+    };
+    console.log(information);
+    
 
     //Do stuffs
   }

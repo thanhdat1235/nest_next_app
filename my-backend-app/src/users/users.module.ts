@@ -1,5 +1,3 @@
-import { AuthService } from './../auth/auth.service';
-import { AuthModule } from './../auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './../auth/strategy/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
@@ -12,7 +10,7 @@ import { UsersController } from './users.controller';
   imports: [
     PrismaModule,
     PassportModule,
-    JwtModule
+    JwtModule,
   ],
   controllers: [UsersController],
   providers: [UserService, JwtStrategy],

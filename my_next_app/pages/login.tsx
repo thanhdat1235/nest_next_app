@@ -5,7 +5,7 @@ import PageWithLayoutType from "../src/types/pageWithLayout";
 import { ToastContainer, toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { setUser } from "../src/redux/userSlice";
+import { setUserLogin } from "../src/redux/userSlice";
 import authService from "../src/services/authService/authService";
 import  Router  from "next/router";
 
@@ -29,25 +29,10 @@ const Login: FC = () => {
     },
   });
 
-  // const getUser = async () => {
-  //   try {
-  //     const allUser = await authService.findAllUser();
-  //     console.log(allUser);
-      
-  //   } catch (error) {
-  //     console.log(error);
-      
-  //   }
-  // }
-
   const onSubmit = async (data: SigninDTO) => {
     try {
       const user = await userService.signIn(data);
-      dispatch(setUser(user.data))
-      const token: string | undefined =  user.headers.authorization || user.headers.Authorization
-      console.log(token);
-      localStorage.setItem("token", token ? token : "");
-
+      dispatch(setUserLogin(user.data))
       toast.success("Hello bro. Chiến thôi :))", {
         position: "top-right",
         autoClose: 5000,
@@ -76,7 +61,8 @@ const Login: FC = () => {
   };
 
   const setStyleValidate = (name: string) =>
-    errors[name] ? { border: "1px solid red" } : {};
+    errors[name as keyof typeof errors] ? { border: "1px solid red" } : {};
+
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">

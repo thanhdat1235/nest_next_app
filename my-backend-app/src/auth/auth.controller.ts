@@ -27,6 +27,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req, @Response() response: ExResponse) {
+    
     const res = await this.authService.login(req.user);
     
     // await this.cacheManager.set('acces_token', res.access_tokenCookie.access_token,  parseInt(process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME)*1000);

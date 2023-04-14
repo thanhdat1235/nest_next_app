@@ -2,13 +2,18 @@ import Head from "next/head";
 import React, { FC, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-
+import ProfileModal from "./modals/profileModal";
 
 const Sidebar: FC = () => {
-  const getUserRedux = useSelector((state: RootState) => state.user.userActive)
+  const getUserRedux = useSelector((state: RootState) => state.userActive);
+  const [showModal, setShowModal] = useState<Boolean>(false);
+  const toggleModal = (toggle: Boolean): any => {
+    setShowModal(toggle)
+  }
 
   return (
     <div className="flex flex-col py-8 pl-6 pr-2 w-64 bg-white flex-shrink-0">
+      <ProfileModal toggleModal={(toggle: Boolean) =>  toggleModal(toggle)} showModal={showModal}/>
       <Head>
         <meta charSet="utf-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -33,7 +38,7 @@ const Sidebar: FC = () => {
         </div>
         <div className="ml-2 font-bold text-2xl">QuickChat</div>
       </div>
-      <div className="flex flex-col items-center bg-indigo-100 border border-gray-200 mt-4 w-full py-6 px-4 rounded-lg">
+      <div className="flex flex-col items-center bg-indigo-100 border border-gray-200 mt-4 w-full py-6 px-4 rounded-lg relative">
         <div className="h-20 w-20 rounded-full border overflow-hidden">
           <img
             src="https://avatars3.githubusercontent.com/u/2763884?s=128"
@@ -49,6 +54,13 @@ const Sidebar: FC = () => {
           </div>
           <div className="leading-none ml-1 text-xs">Active</div>
         </div>
+        <button
+          data-modal-target="authentication-modal"
+          data-modal-toggle="authentication-modal"
+          onClick={() => setShowModal(!showModal)}
+        >
+          <i className="fa-solid fa-gear absolute top-2 right-3 cursor-pointer text-xl hover:text-blue-600"></i>
+        </button>
       </div>
       <div className="flex flex-col mt-8">
         <div className="flex flex-row items-center justify-between text-xs">
@@ -58,16 +70,17 @@ const Sidebar: FC = () => {
           </span>
         </div>
         <div className="flex flex-col space-y-1 mt-4 -mx-2 h-48 overflow-y-auto">
-          {
-             getUserRedux.map((item, index) => (
-              <button className="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2" key={index}>
+          {getUserRedux.map((item, index) => (
+            <button
+              className="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2"
+              key={index}
+            >
               <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
                 {item.username.slice(0, 1)}
               </div>
               <div className="ml-2 text-sm font-semibold">{item.username}</div>
             </button>
-             ))
-          }
+          ))}
         </div>
         <div className="flex flex-row items-center justify-between text-xs mt-6">
           <span className="font-bold">Archivied</span>

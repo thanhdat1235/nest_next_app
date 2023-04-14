@@ -15,12 +15,29 @@ export const userSlice = createSlice({
         email: "",
         password: "",
         role: "",
-        published: "",
+        published: "",        
+        avatar: "",
         createdAt: "",
         updatedAt: "",
         refresh_token: "",
       },
     ],
+    userIsLogin: {
+      id: "",
+      username: "",
+      email: "",
+      password: "",
+      role: "",
+      published: "",      
+      avatar: {
+        id: "",
+        userID: "",
+        avatar_link: "", 
+      },
+      createdAt: "",
+      updatedAt: "",
+      refresh_token: "",
+    },
   },
   reducers: {
     create: (state, action) => {
@@ -32,8 +49,12 @@ export const userSlice = createSlice({
     setUserActive: (state, action) => {
       state.userActive = action.payload;
     },
+
+    setUserLogin: (state, action) => {
+      state.userIsLogin = action.payload;
+    },
   },
 });
 
-export const { create, setUserActive } = userSlice.actions;
+export const { create, setUserActive, setUserLogin } = userSlice.actions;
 export default userSlice.reducer;

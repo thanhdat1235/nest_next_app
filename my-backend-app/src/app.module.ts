@@ -1,4 +1,4 @@
-import { AppGateway } from './app.gateway';
+import { ChatGateway } from './chat/chat.gateway';
 import { Module, CacheModule, CacheStore } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -9,7 +9,8 @@ import * as redisStore from 'cache-manager-redis-store';
 import { UserService } from './users/users.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ChatModule } from './chat/chat.module';
-
+import { UploadModule } from './upload/upload.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
@@ -24,8 +25,13 @@ import { ChatModule } from './chat/chat.module';
       port: 6379,
     }),
     ChatModule,
+    UploadModule,
+    ServeStaticModule.forRoot({
+      rootPath: 'public/images/uploads',
+      serveRoot: '/avatar',
+    }),
   ],
   controllers: [AppController],
-  providers: [AppService, AppGateway, UserService, JwtService],
+  providers: [AppService, UserService, JwtService],
 })
 export class AppModule {}

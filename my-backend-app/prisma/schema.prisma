@@ -16,35 +16,40 @@ model User {
   username      String
   email         String    @unique
   password      String
-  role          String    @default("member")
+  role          String    @default("customer")
   published     Boolean   @default(false)
+  avatar        Upload?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
   refresh_token String?
-  sender        Chat[]    @relation("sender")
-  receiver      Chat[]    @relation("receiver")
-  // group         ChatGroup @relation(name: "members", fields: [groupId], references: [id])
-  // groupId       String
+  messages      Message[]
 }
 
-model Chat {
-  id         String    @id @default(cuid())
-  messages   String?
-  createdAt  DateTime  @default(now())
-  sender     User      @relation(name: "sender", fields: [senderId], references: [id])
-  senderId   String
-  receiver   User      @relation(name: "receiver", fields: [receiverId], references: [id])
-  receiverId String
-  group      ChatGroup @relation(fields: [groupId], references: [id])
-  groupId    String
-}
-
-model ChatGroup {
-  id           String   @id @default(cuid())
+model Group {
+  id           String    @id @default(cuid())
   groupName    String
   groupAvartar String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @default(now())
-  messages     Chat[]
-  // members       User[] @relation("members")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @default(now())
+  deletedAt    DateTime?
+  messages     Message[]
+}
+
+model Message {
+  messages  String?
+  createdAt DateTime @default(now())
+  inGroup   Group?   @relation(fields: [groupID], references: [id])
+  groupID   String
+  ofUser    User     @relation(fields: [userID], references: [id])
+  userID    String
+
+  @@id([groupID, userID])
+}
+
+model Upload {
+  id          String @id @default(cuid())
+  user_id     User   @relation(fields: [userID], references: [id])
+  userID      String @unique
+  avatar_link String
 }
