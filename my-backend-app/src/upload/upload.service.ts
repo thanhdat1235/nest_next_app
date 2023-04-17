@@ -6,10 +6,8 @@ import { UserService } from 'src/users/users.service';
 
 @Injectable()
 export class UploadService {
-  constructor(
-    private prisma: PrismaService,
-  ) {}
-  
+  constructor(private prisma: PrismaService) {}
+
   async uploadFile(data: {
     file: Express.Multer.File;
     userID: string;
@@ -21,7 +19,7 @@ export class UploadService {
       avatar_link: avatarLink,
     };
 
-    const userID = await this.findUniqueAvatarUser(data.userID)
+    const userID = await this.findUniqueAvatarUser(data.userID);
 
     if (userID) {
       throw new HttpException(
@@ -52,23 +50,23 @@ export class UploadService {
       avatar_link: avatarLink,
     };
 
-    const userID = await this.findUniqueAvatarUser(data.userID)
-
-    if (userID) {
-      throw new HttpException(
-        'User avatar already exists. Please update this',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    const userID = await this.findUniqueAvatarUser(data.userID);
 
     try {
-      const avatar = await this.prisma.upload.update({
-        where: {
-          userID: user_id 
-        },
-        data: saveData
-      })
-      return avatar;
+      if (userID.userID) {
+        const avatar = await this.prisma.upload.update({
+          where: {
+            userID: user_id,
+          },
+          data: saveData,
+        });
+        return avatar;
+      } else {
+        throw new HttpException(
+          'User is not exists',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
     } catch (error) {
       throw new Error(error.message);
     }

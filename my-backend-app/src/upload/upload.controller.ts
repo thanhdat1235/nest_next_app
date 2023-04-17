@@ -53,7 +53,6 @@ export class UploadController {
     @Body() body: { userID: string },
     @Req() req: Request
   ) {
-    console.log(body);
             
     const host = `${req.protocol}://${req.get('Host')}`;    
     const userID = body.userID;
@@ -90,7 +89,6 @@ export class UploadController {
     @Body() body: { userID: string },
     @Req() req: Request
   ) {
-    console.log(body);
             
     const host = `${req.protocol}://${req.get('Host')}`;    
     const userID = body.userID;

@@ -2,10 +2,14 @@ import { PrismaService } from './../prisma/prisma.service';
 import { HttpException, HttpStatus, Injectable, Param } from '@nestjs/common';
 import { User, Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { UploadService } from 'src/upload/upload.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private uploadService: UploadService,
+  ) {}
   async create(createUserDto: Prisma.UserCreateInput): Promise<User> {
     const { email, password } = createUserDto;
 
@@ -63,8 +67,8 @@ export class UserService {
           email: email,
         },
         include: {
-          avatar: true
-        }
+          avatar: true,
+        },
       });
       return user;
     } catch (error) {
@@ -99,12 +103,17 @@ export class UserService {
     }
     try {
       const userUpdate = await this.prisma.user.update({
-        where: { id },
+        where: { id: id },
         data: updateUserDTO,
       });
       userUpdate.password = undefined;
+      const avatarUpdate = await this.uploadService.findUniqueAvatarUser(id);
+      userUpdate['avatar'] = avatarUpdate;
+      
       return userUpdate;
     } catch (error) {
+      console.log(error);
+      
       throw new HttpException(
         'Something went wrong',
         HttpStatus.INTERNAL_SERVER_ERROR,

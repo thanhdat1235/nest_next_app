@@ -23,7 +23,7 @@ const FileUploadService = {
 
   updateAvatar: async (data: { userID: string; file: File }) => {
     
-    const { userID, file } = data;    
+    const { userID, file } = data;       
          
      let formData = new FormData();
    

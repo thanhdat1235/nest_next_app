@@ -11,6 +11,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ChatModule } from './chat/chat.module';
 import { UploadModule } from './upload/upload.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { UploadService } from './upload/upload.service';
 
 @Module({
   imports: [
@@ -32,6 +33,6 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, UserService, JwtService],
+  providers: [AppService, UserService, JwtService, UploadService],
 })
 export class AppModule {}

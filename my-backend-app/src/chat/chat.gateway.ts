@@ -26,7 +26,12 @@ export enum TypeInformation {
   'device_id' = 'device_id',
 }
 
-@WebSocketGateway(4002, { cors: true })
+@WebSocketGateway(4002, {
+  cors: {
+    origin: ['http://localhost:3000', 'http://localhost:4002'],
+    credentials: true,
+  },
+})
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -38,7 +43,10 @@ export class ChatGateway
   server: Server;
   @SubscribeMessage('sendMessage')
   async getDataUserFromToken(client: Socket): Promise<Prisma.UserCreateInput> {
-    const authToken: any = client.handshake.headers?.token;
+    const authToken: any = client.handshake.headers?.cookie.replace(
+      'access=',
+      '',
+    );
 
     const decoded = this.jwtService.verify(authToken, {
       secret: process.env.JWT_ACCESS_TOKEN_SECRET,
@@ -52,7 +60,10 @@ export class ChatGateway
     }
   }
 
+  @SubscribeMessage('message')
   async handleSendMessage(client: Socket, payload): Promise<void> {
+    console.log(payload);
+
     //  await this.appService.createMessage(payload);
     this.server.emit('recMessage', payload);
   }
@@ -69,19 +80,18 @@ export class ChatGateway
 
   async handleConnection(client: Socket, ...args: any[]) {
     console.log(`Connected ${client.id}`);
-    const user: Prisma.UserCreateInput = await this.getDataUserFromToken(
-      client,
-    );    
+    const authToken: any = client.handshake.headers?.cookie;
+    // console.log(cookies.access);
+    // const user: Prisma.UserCreateInput = await this.getDataUserFromToken(
+    //   client,
+    // );
 
-    const information = {
-      user_id: user.id, 
-      type: TypeInformation.socket_id,
-      status: false,
-      value: client.id,
-    };
-    console.log(information);
-    
-
+    // const information = {
+    //   user_id: user.id,
+    //   type: TypeInformation.socket_id,
+    //   status: false,
+    //   value: client.id,
+    // };
     //Do stuffs
   }
 }

@@ -7,6 +7,10 @@ import { PassportModule } from '@nestjs/passport';
 import { PrismaModule } from './../prisma/prisma.module';
 import { UsersModule } from 'src/users/users.module';
 import { UserService } from 'src/users/users.service';
+import { ChatModule } from 'src/chat/chat.module';
+import { ChatService } from 'src/chat/chat.service';
+import { AuthService } from 'src/auth/auth.service';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
@@ -15,6 +19,6 @@ import { UserService } from 'src/users/users.service';
     JwtModule,
   ],
   controllers: [UploadController],
-  providers: [UploadService, JwtStrategy, UserService],
+  providers: [UploadService, JwtStrategy, UserService, ChatService, AuthService],
 })
 export class UploadModule {}

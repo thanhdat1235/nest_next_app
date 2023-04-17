@@ -31,13 +31,13 @@ const FileUpload = (props: IProps) => {
 
     try {
       if (file) {        
-        if (!props.avatar) {
+        if (!avatar) {
           const imgRes = await UploadService.upload({ userID, file });
           setAvatar(imgRes.data.avatar_link);
           props.setLink(imgRes.data)
         } else {                    
           const imgRes = await UploadService.updateAvatar({ userID, file });
-          setAvatar(imgRes.data);
+          setAvatar(imgRes.data.avatar_link);
         }
       }
       // setMessage(imgRes.data.message);

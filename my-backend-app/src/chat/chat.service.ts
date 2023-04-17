@@ -1,11 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { UpdateChatDto } from './dto/update-chat.dto';
+import { Prisma } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ChatService {
-  create(createChatDto: CreateChatDto) {
-    return 'This action adds a new chat';
+  constructor(private prisma: PrismaService) {}
+  createGroup(group: Prisma.GroupCreateManyInput) {
+    try {
+      const newGroup = this.prisma.group.create({
+        data: group
+      })
+      return newGroup;
+    } catch (error) {
+      console.log(error);
+      
+      throw new HttpException('Create group failed', HttpStatus.BAD_REQUEST)
+    }
   }
 
   findAll() {

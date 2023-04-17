@@ -6,13 +6,20 @@ import { UsersModule } from 'src/users/users.module';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
+import { UploadModule } from 'src/upload/upload.module';
+import { UploadService } from 'src/upload/upload.service';
+import { ChatController } from './chat.controller';
 
 @Module({
-  imports: [
-    UsersModule,
-    JwtModule,
-    PrismaModule  
+  imports: [UsersModule, JwtModule, PrismaModule],
+  providers: [
+    ChatGateway,
+    ChatService,
+    UserService,
+    JwtService,
+    PrismaService,
+    UploadService,
   ],
-  providers: [ChatGateway, ChatService, UserService, JwtService, PrismaService]
+  controllers: [ChatController],
 })
 export class ChatModule {}

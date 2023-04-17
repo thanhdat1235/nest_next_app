@@ -1,16 +1,18 @@
 import React, { FC, useEffect, useState } from "react";
 import HomeLayout from "../src/layouts/home.layout";
 import PageWithLayoutType from "../src/types/pageWithLayout";
-import authService from "../src/services/authService/authService";
+import authService from "../src/services/authService/auth.service";
 import { useDispatch } from "react-redux";
 import { setUserActive } from "../src/redux/userSlice";
-
+import  ChatService from "../src/services/chatservice/chat.service";
+ 
 const Home: FC = () => {
   const [userActive, setUserActiveState] = useState();
   const dispath = useDispatch();
   
   useEffect(() => {
     findUserActive();
+    handleSocketConect();
   }, [])
 
   const findUserActive = async () => {
@@ -18,12 +20,23 @@ const Home: FC = () => {
     setUserActiveState(responseUser.data)
     dispath(setUserActive(responseUser.data));
   }
+
+  const handleSocketConect = async () => {
+    try {
+      const response = await ChatService.connect();
+      console.log(response);
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
   return (
     <div className="flex flex-col flex-auto h-full p-6">
       <div className="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-100 h-full p-4">
         <div className="flex flex-col h-full overflow-x-auto mb-4">
           <div className="flex flex-col h-full">
-            <div className="grid grid-cols-12 gap-y-2">
+            {/* <div className="grid grid-cols-12 gap-y-2">
               <div className="col-start-1 col-end-8 p-3 rounded-lg">
                 <div className="flex flex-row items-center">
                   <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
@@ -174,7 +187,7 @@ const Home: FC = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="flex flex-row items-center h-16 rounded-xl bg-white w-full px-4">

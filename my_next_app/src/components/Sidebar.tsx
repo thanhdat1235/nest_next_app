@@ -6,14 +6,18 @@ import ProfileModal from "./modals/profileModal";
 
 const Sidebar: FC = () => {
   const getUserRedux = useSelector((state: RootState) => state.userActive);
+  const getAuth = useSelector((state: RootState) => state.userIsLogin);
   const [showModal, setShowModal] = useState<Boolean>(false);
   const toggleModal = (toggle: Boolean): any => {
-    setShowModal(toggle)
-  }
+    setShowModal(toggle);
+  };
 
   return (
     <div className="flex flex-col py-8 pl-6 pr-2 w-64 bg-white flex-shrink-0">
-      <ProfileModal toggleModal={(toggle: Boolean) =>  toggleModal(toggle)} showModal={showModal}/>
+      <ProfileModal
+        toggleModal={(toggle: Boolean) => toggleModal(toggle)}
+        showModal={showModal}
+      />
       <Head>
         <meta charSet="utf-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -40,13 +44,21 @@ const Sidebar: FC = () => {
       </div>
       <div className="flex flex-col items-center bg-indigo-100 border border-gray-200 mt-4 w-full py-6 px-4 rounded-lg relative">
         <div className="h-20 w-20 rounded-full border overflow-hidden">
-          <img
-            src="https://avatars3.githubusercontent.com/u/2763884?s=128"
-            alt="Avatar"
-            className="h-full w-full"
-          />
+          {getAuth.avatar ? (
+            <img
+              src={getAuth.avatar.avatar_link}
+              alt="Avatar"
+              className="h-full w-full"
+            />
+          ) : (
+            <img
+              src="https://pgddttramtau.edu.vn/wp-content/uploads/2022/12/1670933315_639_68-Hinh-Anh-Cho-Hai-Huoc-Bua-Lay-CUOI-RA.jpg"
+              alt="Avatar"
+              className="h-full w-full"
+            />
+          )}
         </div>
-        <div className="text-sm font-semibold mt-2">Aminos Co.</div>
+        <div className="text-sm font-semibold mt-2">{getAuth.username}</div>
         <div className="text-xs text-gray-500">Lead UI/UX Designer</div>
         <div className="flex flex-row items-center mt-3">
           <div className="flex flex-col justify-center h-4 w-8 bg-indigo-500 rounded-full">

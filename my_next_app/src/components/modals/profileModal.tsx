@@ -60,6 +60,9 @@ const ProfileModal = (props: IProps) => {
 
   const onSubmit = async (data: any) => {
     try {
+
+      delete data['avatar'];
+
       const userUpdate = await userService.updateUser({
         data,
       });
