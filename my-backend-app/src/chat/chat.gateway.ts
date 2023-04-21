@@ -12,6 +12,8 @@ import {
 import { Socket, Server } from 'socket.io';
 import { UserService } from '../users/users.service';
 import { Prisma } from '@prisma/client';
+import { parse } from 'cookie';
+import { WsException } from '@nestjs/websockets';
 
 export interface IInformation {
   id: number | string;
@@ -33,7 +35,9 @@ export enum TypeInformation {
   },
 })
 export class ChatGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+  implements OnGatewayInit, 
+  // OnGatewayConnection
+   OnGatewayDisconnect
 {
   constructor(
     private userService: UserService,
@@ -42,11 +46,15 @@ export class ChatGateway
   @WebSocketServer()
   server: Server;
   @SubscribeMessage('sendMessage')
-  async getDataUserFromToken(client: Socket): Promise<Prisma.UserCreateInput> {
-    const authToken: any = client.handshake.headers?.cookie.replace(
-      'access=',
-      '',
-    );
+  async getDataUserFromCookie(client: Socket): Promise<Prisma.UserCreateInput> {
+    // const authToken: any = client.handshake.headers?.cookie.replace(
+    //   'access=', 
+    //   '',
+    // );
+    
+    const authToken: any = parse(client.handshake.headers?.cookie).access;
+    
+    console.log(authToken);
 
     const decoded = this.jwtService.verify(authToken, {
       secret: process.env.JWT_ACCESS_TOKEN_SECRET,
@@ -60,12 +68,13 @@ export class ChatGateway
     }
   }
 
-  @SubscribeMessage('message')
+  @SubscribeMessage('send-message')
   async handleSendMessage(client: Socket, payload): Promise<void> {
     console.log(payload);
+    
 
     //  await this.appService.createMessage(payload);
-    this.server.emit('recMessage', payload);
+    this.server.emit('repMessage', payload);
   }
 
   afterInit(server: Server) {
@@ -78,20 +87,21 @@ export class ChatGateway
     //Do stuffs
   }
 
-  async handleConnection(client: Socket, ...args: any[]) {
-    console.log(`Connected ${client.id}`);
-    const authToken: any = client.handshake.headers?.cookie;
-    // console.log(cookies.access);
-    // const user: Prisma.UserCreateInput = await this.getDataUserFromToken(
-    //   client,
-    // );
+  // async handleConnection(client: Socket, ...args: any[]) {    
+  //   // console.log(`Connected ${client.id}`);
+    
+  //   const user: Prisma.UserCreateInput = await this.getDataUserFromCookie(
+  //     client, 
+  //   );
 
-    // const information = {
-    //   user_id: user.id,
-    //   type: TypeInformation.socket_id,
-    //   status: false,
-    //   value: client.id,
-    // };
-    //Do stuffs
-  }
+  //   const information = {
+  //     user_id: user.id, 
+  //     type: TypeInformation.socket_id,
+  //     status: false,
+  //     value: client.id,
+  //   };
+  // }
+
+
+
 }

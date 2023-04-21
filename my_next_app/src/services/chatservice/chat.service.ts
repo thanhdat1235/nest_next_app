@@ -1,21 +1,42 @@
-import { io, Socket } from 'socket.io-client';
+import { io, Socket } from "socket.io-client";
 import { CHAT_API_URL } from "../urlApi";
 
-const ChatService = {
-  connect:async () => {
-  const socket = io(CHAT_API_URL, {
-    withCredentials: true
-  });
+const socket = io(CHAT_API_URL, {
+  withCredentials: true,
+});
 
-  try {
-    socket.on('connect', () => {
+const ChatService = {
+  connect: async () => {
+
+    try {
+      socket.on("connect", () => {
         console.log("Connected");
       });
-  } catch (error) {
-    console.log(error);
-    
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  handleSendMessage: (message: any) => {
+    try {
+    const repMessage = socket.emit('send-message', message, ChatService.handleOnMessage)
+    return repMessage;
+    } catch (error) {
+      console.log(error);
+      
+    }
+  },
+
+  handleOnMessage: () => {
+    try {
+      socket.on("repMessage", (arg) => {
+        return arg;
+      });
+    } catch (error) {
+      console.log(error);
+      
+    }
   }
-}
   
 };
 

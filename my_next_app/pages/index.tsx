@@ -1,36 +1,47 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import HomeLayout from "../src/layouts/home.layout";
 import PageWithLayoutType from "../src/types/pageWithLayout";
 import authService from "../src/services/authService/auth.service";
 import { useDispatch } from "react-redux";
 import { setUserActive } from "../src/redux/userSlice";
-import  ChatService from "../src/services/chatservice/chat.service";
- 
+import ChatService from "../src/services/chatservice/chat.service";
+
 const Home: FC = () => {
   const [userActive, setUserActiveState] = useState();
+  const inputRef = useRef<HTMLInputElement>(null);
   const dispath = useDispatch();
-  
+
   useEffect(() => {
     findUserActive();
-    handleSocketConect();
-  }, [])
+    // handleSocketConect();
+  }, []);
 
   const findUserActive = async () => {
     const responseUser = await authService.findActiveUser();
-    setUserActiveState(responseUser.data)
+    setUserActiveState(responseUser.data);
     dispath(setUserActive(responseUser.data));
-  }
+  };
 
-  const handleSocketConect = async () => {
+  // const handleSocketConect = async () => {
+  //   try {
+  //     await ChatService.connect();
+  //     ChatService.handleOnMessage();
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const handleSend = () => {
+    const message = inputRef.current?.value;
     try {
-      const response = await ChatService.connect();
-      console.log(response);
-      
+     const res =  ChatService.handleSendMessage(message);
+     console.log(res);
+     
     } catch (error) {
       console.log(error);
-      
     }
-  }
+  };
+
   return (
     <div className="flex flex-col flex-auto h-full p-6">
       <div className="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-100 h-full p-4">
@@ -214,6 +225,7 @@ const Home: FC = () => {
               <input
                 type="text"
                 className="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
+                ref={inputRef}
               />
               <button className="absolute flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-gray-600">
                 <svg
@@ -234,7 +246,10 @@ const Home: FC = () => {
             </div>
           </div>
           <div className="ml-4">
-            <button className="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0">
+            <button
+              className="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0"
+              onClick={handleSend}
+            >
               <span>Send</span>
               <span className="ml-2">
                 <svg

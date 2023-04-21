@@ -1,9 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
-import { join } from 'path';
 import * as express from 'express';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import * as session from 'express-session';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -15,6 +15,14 @@ async function bootstrap() {
   });
 
   app.use(cookieParser());
+
+  app.use(
+    session({
+      secret: process.env.JWT_ACCESS_TOKEN_SECRET,
+      resave: true,
+      saveUninitialized: true,
+    }),
+  );
 
   await app.listen(4001);
 }
