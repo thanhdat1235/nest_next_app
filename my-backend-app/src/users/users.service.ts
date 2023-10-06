@@ -9,7 +9,7 @@ export class UserService {
   constructor(
     private prisma: PrismaService,
     private uploadService: UploadService,
-  ) {}
+  ) { }
   async create(createUserDto: Prisma.UserCreateInput): Promise<User> {
     const { email, password } = createUserDto;
 
@@ -46,7 +46,11 @@ export class UserService {
 
   async findAll(): Promise<User[]> {
     try {
-      const allUser = await this.prisma.user.findMany();
+      const allUser = await this.prisma.user.findMany({
+        include: {
+          avatar: true,
+        },
+      });
       const response = allUser.map((user) => {
         user.password = undefined;
         return user;
@@ -109,11 +113,11 @@ export class UserService {
       userUpdate.password = undefined;
       const avatarUpdate = await this.uploadService.findUniqueAvatarUser(id);
       userUpdate['avatar'] = avatarUpdate;
-      
+
       return userUpdate;
     } catch (error) {
       console.log(error);
-      
+
       throw new HttpException(
         'Something went wrong',
         HttpStatus.INTERNAL_SERVER_ERROR,

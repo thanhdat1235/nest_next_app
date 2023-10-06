@@ -29,7 +29,7 @@ export class AuthService {
   constructor(
     private UserService: UserService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async validateUser(email: string, password: string): Promise<User> {
     const user = await this.UserService.findOne(email);
@@ -47,7 +47,8 @@ export class AuthService {
     throw new HttpException('User not found', HttpStatus.NOT_FOUND);
   }
 
-  async login(user: User): Promise<DataResponse> {    
+  async login(user: User): Promise<DataResponse> {
+
     const dataSign = {
       email: user.email,
       username: user.username,
@@ -65,7 +66,7 @@ export class AuthService {
   }
 
   async getNewAccessToken(refreshToken: string) {
-    const tokenInfo = this.jwtService.decode(refreshToken);    
+    const tokenInfo = this.jwtService.decode(refreshToken);
 
     const user = await this.UserService.findOne(tokenInfo['email']);
     if (!user) {

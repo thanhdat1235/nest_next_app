@@ -35,14 +35,13 @@ export enum TypeInformation {
   },
 })
 export class ChatGateway
-  implements OnGatewayInit, 
+  implements OnGatewayInit,
   // OnGatewayConnection
-   OnGatewayDisconnect
-{
+  OnGatewayDisconnect {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
   @WebSocketServer()
   server: Server;
   @SubscribeMessage('sendMessage')
@@ -51,9 +50,9 @@ export class ChatGateway
     //   'access=', 
     //   '',
     // );
-    
+
     const authToken: any = parse(client.handshake.headers?.cookie).access;
-    
+
     console.log(authToken);
 
     const decoded = this.jwtService.verify(authToken, {
@@ -71,14 +70,14 @@ export class ChatGateway
   @SubscribeMessage('send-message')
   async handleSendMessage(client: Socket, payload): Promise<void> {
     console.log(payload);
-    
+
 
     //  await this.appService.createMessage(payload);
     this.server.emit('repMessage', payload);
   }
 
   afterInit(server: Server) {
-    // console.log(server);
+    console.log(server);
     //Do stuffs
   }
 
@@ -89,7 +88,7 @@ export class ChatGateway
 
   // async handleConnection(client: Socket, ...args: any[]) {    
   //   // console.log(`Connected ${client.id}`);
-    
+
   //   const user: Prisma.UserCreateInput = await this.getDataUserFromCookie(
   //     client, 
   //   );

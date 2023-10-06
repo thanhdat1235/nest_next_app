@@ -12,21 +12,21 @@ datasource db {
 }
 
 model User {
-  id              String        @id @default(cuid())
-  username        String
-  email           String        @unique
-  password        String
-  role            String        @default("customer")
-  published       Boolean       @default(false)
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  refresh_token   String?
-  deletedAt       DateTime?
-  avatar          Upload?
-  myGroup         Group[]
-  userInGroup     UserInGroup[]
-  addedBy         UserInGroup[] @relation(name: "added-by")
-  messages        Message[]
+  id            String        @id @default(cuid())
+  username      String
+  email         String        @unique
+  password      String
+  role          String        @default("customer")
+  published     Boolean       @default(false)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  refresh_token String?
+  deletedAt     DateTime?
+  avatar        Upload?
+  myGroup       Group[]
+  userInGroup   UserInGroup[]
+  addedBy       UserInGroup[] @relation(name: "added-by")
+  messages      Message[]
 }
 
 model Group {
@@ -43,14 +43,14 @@ model Group {
 }
 
 model Message {
-  id            String    @id @default(cuid())
-  messages      String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime?
-  inGroup       Group?    @relation(fields: [groupID], references: [id])
-  groupID       String
-  user          User      @relation(fields: [userID], references: [id])
-  userID        String
+  id        String    @id @default(cuid())
+  messages  String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+  inGroup   Group?    @relation(fields: [groupID], references: [id])
+  groupID   String
+  user      User      @relation(fields: [userID], references: [id])
+  userID    String
 }
 
 model UserInGroup {

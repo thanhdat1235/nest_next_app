@@ -3,8 +3,10 @@ import React, { FC, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import ProfileModal from "./modals/profileModal";
+import { useRouter } from 'next/navigation';
 
 const Sidebar: FC = () => {
+  const router = useRouter()
   const getUserRedux = useSelector((state: RootState) => state.userActive);
   const getAuth = useSelector((state: RootState) => state.userIsLogin);
   const [showModal, setShowModal] = useState<Boolean>(false);
@@ -13,7 +15,7 @@ const Sidebar: FC = () => {
   };
 
   return (
-    <div className="flex flex-col py-8 pl-6 pr-2 w-64 bg-white flex-shrink-0">
+    <div className="flex flex-col py-8 px-6 w-72 bg-white flex-shrink-0">
       <ProfileModal
         toggleModal={(toggle: Boolean) => toggleModal(toggle)}
         showModal={showModal}
@@ -48,7 +50,7 @@ const Sidebar: FC = () => {
             <img
               src={getAuth.avatar.avatar_link}
               alt="Avatar"
-              className="h-full w-full"
+              className="h-full w-full object-cover"
             />
           ) : (
             <img
@@ -86,9 +88,16 @@ const Sidebar: FC = () => {
             <button
               className="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2"
               key={index}
+              onClick={() => (router.push(`/chats/${item.id}`))}
             >
               <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
-                {item.username.slice(0, 1)}
+                {
+                  item.avatar.avatar_link ? (
+                    <img src={item.avatar.avatar_link} alt="avatar" className="w-full h-full rounded-full object-cover" />
+                  ) : (
+                    <img src="/images/no-image.jpg" alt="no-image" className="w-full h-full rounded-full object-cover" />
+                  )
+                }
               </div>
               <div className="ml-2 text-sm font-semibold">{item.username}</div>
             </button>

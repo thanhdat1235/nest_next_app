@@ -19,25 +19,24 @@ const ChatService = {
 
   handleSendMessage: (message: any) => {
     try {
-    const repMessage = socket.emit('send-message', message, ChatService.handleOnMessage)
-    return repMessage;
+      socket.emit('send-message', message, ChatService.handleOnMessage);
     } catch (error) {
       console.log(error);
-      
+
     }
   },
 
   handleOnMessage: () => {
-    try {
-      socket.on("repMessage", (arg) => {
-        return arg;
+    return new Promise((resolve, reject) => {
+      socket.on("repMessage", (message: string) => {
+        resolve(message);
       });
-    } catch (error) {
-      console.log(error);
-      
-    }
+    });
   }
-  
+
+
+
+
 };
 
 export default ChatService;

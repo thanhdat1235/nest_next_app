@@ -2,14 +2,18 @@ import React, { FC, useEffect, useRef, useState } from "react";
 import HomeLayout from "../src/layouts/home.layout";
 import PageWithLayoutType from "../src/types/pageWithLayout";
 import authService from "../src/services/authService/auth.service";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUserActive } from "../src/redux/userSlice";
 import ChatService from "../src/services/chatservice/chat.service";
+import { RootState } from "../src/redux/store";
+import { UserActive } from "../src/types/userType";
 
 const Home: FC = () => {
-  const [userActive, setUserActiveState] = useState();
+  const [userList, setUserList] = useState();
   const inputRef = useRef<HTMLInputElement>(null);
   const dispath = useDispatch();
+
+  const getAuth = useSelector((state: RootState) => state.userIsLogin);
 
   useEffect(() => {
     findUserActive();
@@ -18,8 +22,8 @@ const Home: FC = () => {
 
   const findUserActive = async () => {
     const responseUser = await authService.findActiveUser();
-    setUserActiveState(responseUser.data);
-    dispath(setUserActive(responseUser.data));
+    setUserList(responseUser.data.filter((user: UserActive) => user.id != getAuth.id));
+    dispath(setUserActive(responseUser.data.filter((user: UserActive) => user.id != getAuth.id)));
   };
 
   // const handleSocketConect = async () => {
@@ -34,242 +38,83 @@ const Home: FC = () => {
   const handleSend = () => {
     const message = inputRef.current?.value;
     try {
-     const res =  ChatService.handleSendMessage(message);
-     console.log(res);
-     
+      const res = ChatService.handleSendMessage(message);
+      console.log(res);
+
     } catch (error) {
       console.log(error);
     }
   };
 
   return (
-    <div className="flex flex-col flex-auto h-full p-6">
-      <div className="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-100 h-full p-4">
-        <div className="flex flex-col h-full overflow-x-auto mb-4">
-          <div className="flex flex-col h-full">
-            {/* <div className="grid grid-cols-12 gap-y-2">
-              <div className="col-start-1 col-end-8 p-3 rounded-lg">
-                <div className="flex flex-row items-center">
-                  <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                    A
-                  </div>
-                  <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
-                    <div>Hey How are you today?</div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-start-1 col-end-8 p-3 rounded-lg">
-                <div className="flex flex-row items-center">
-                  <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                    A
-                  </div>
-                  <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
-                    <div>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                      Vel ipsa commodi illum saepe numquam maxime asperiores
-                      voluptate sit, minima perspiciatis.
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-start-6 col-end-13 p-3 rounded-lg">
-                <div className="flex items-center justify-start flex-row-reverse">
-                  <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                    A
-                  </div>
-                  <div className="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
-                    <div>I'm ok what about you?</div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-start-6 col-end-13 p-3 rounded-lg">
-                <div className="flex items-center justify-start flex-row-reverse">
-                  <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                    A
-                  </div>
-                  <div className="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
-                    <div>
-                      Lorem ipsum dolor sit, amet consectetur adipisicing. ?
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-start-1 col-end-8 p-3 rounded-lg">
-                <div className="flex flex-row items-center">
-                  <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                    A
-                  </div>
-                  <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
-                    <div>Lorem ipsum dolor sit amet !</div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-start-6 col-end-13 p-3 rounded-lg">
-                <div className="flex items-center justify-start flex-row-reverse">
-                  <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                    A
-                  </div>
-                  <div className="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
-                    <div>
-                      Lorem ipsum dolor sit, amet consectetur adipisicing. ?
-                    </div>
-                    <div className="absolute text-xs bottom-0 right-0 -mb-5 mr-2 text-gray-500">
-                      Seen
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-start-1 col-end-8 p-3 rounded-lg">
-                <div className="flex flex-row items-center">
-                  <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                    A
-                  </div>
-                  <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
-                    <div>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Perspiciatis, in.
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-start-1 col-end-8 p-3 rounded-lg">
-                <div className="flex flex-row items-center">
-                  <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                    A
-                  </div>
-                  <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
-                    <div className="flex flex-row items-center">
-                      <button className="flex items-center justify-center bg-indigo-600 hover:bg-indigo-800 rounded-full h-8 w-10">
-                        <svg
-                          className="w-6 h-6 text-white"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="1.5"
-                            d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                          ></path>
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="1.5"
-                            d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                          ></path>
-                        </svg>
-                      </button>
-                      <div className="flex flex-row items-center space-x-px ml-4">
-                        <div className="h-2 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-2 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-4 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-8 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-8 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-10 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-10 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-12 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-10 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-6 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-5 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-4 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-3 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-2 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-2 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-2 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-10 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-2 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-10 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-8 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-8 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-1 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-1 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-2 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-8 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-8 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-2 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-2 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-2 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-2 w-1 bg-gray-500 rounded-lg"></div>
-                        <div className="h-4 w-1 bg-gray-500 rounded-lg"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> */}
+    <div className="flex flex-col flex-auto h-full p-6 bg-gray-800">
+      <div className="w-full">
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-4 py-12">
+          <div className="text-center pb-12">
+            <h2 className="text-base font-bold text-indigo-600">
+              We have the best equipment in the market
+            </h2>
+            <h1 className="font-bold text-3xl md:text-4xl lg:text-5xl font-heading text-white">
+              Check our awesome team memwhite
+            </h1>
           </div>
-        </div>
-        <div className="flex flex-row items-center h-16 rounded-xl bg-white w-full px-4">
-          <div>
-            <button className="flex items-center justify-center text-gray-400 hover:text-gray-600">
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
-                ></path>
-              </svg>
-            </button>
-          </div>
-          <div className="flex-grow ml-4">
-            <div className="relative w-full">
-              <input
-                type="text"
-                className="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
-                ref={inputRef}
-              />
-              <button className="absolute flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-gray-600">
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  ></path>
-                </svg>
-              </button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="w-full bg-gray-900 rounded-lg sahdow-lg p-12 flex flex-col justify-center items-center">
+              <div className="mb-8">
+                <img className="object-center object-cover rounded-full h-36 w-36" src="https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80" alt="photo" />
+              </div>
+              <div className="text-center">
+                <p className="text-xl text-white font-bold mb-2">Dany Bailey</p>
+                <p className="text-base text-gray-400 font-normal">Software Engineer</p>
+              </div>
+            </div>
+            <div className="w-full bg-gray-900 rounded-lg sahdow-lg p-12 flex flex-col justify-center items-center">
+              <div className="mb-8">
+                <img className="object-center object-cover rounded-full h-36 w-36" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80" alt="photo" />
+              </div>
+              <div className="text-center">
+                <p className="text-xl text-white font-bold mb-2">Lucy Carter</p>
+                <p className="text-base text-gray-400 font-normal">Graphic Designer</p>
+              </div>
+            </div>
+            <div className="w-full bg-gray-900 rounded-lg sahdow-lg p-12 flex flex-col justify-center items-center">
+              <div className="mb-8">
+                <img className="object-center object-cover rounded-full h-36 w-36" src="https://images.unsplash.com/photo-1499952127939-9bbf5af6c51c?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1176&q=80" alt="photo" />
+              </div>
+              <div className="text-center">
+                <p className="text-xl text-white font-bold mb-2">Jade Bradley</p>
+                <p className="text-base text-gray-400 font-normal">Dev Ops</p>
+              </div>
+            </div>
+            <div className="w-full bg-gray-900 rounded-lg sahdow-lg p-12 flex flex-col justify-center items-center">
+              <div className="mb-8">
+                <img className="object-center object-cover rounded-full h-36 w-36" src="https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80" alt="photo" />
+              </div>
+              <div className="text-center">
+                <p className="text-xl text-white font-bold mb-2">Dany Bailey</p>
+                <p className="text-base text-gray-400 font-normal">Software Engineer</p>
+              </div>
+            </div>
+            <div className="w-full bg-gray-900 rounded-lg sahdow-lg p-12 flex flex-col justify-center items-center">
+              <div className="mb-8">
+                <img className="object-center object-cover rounded-full h-36 w-36" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80" alt="photo" />
+              </div>
+              <div className="text-center">
+                <p className="text-xl text-white font-bold mb-2">Lucy Carter</p>
+                <p className="text-base text-gray-400 font-normal">Graphic Designer</p>
+              </div>
+            </div>
+            <div className="w-full bg-gray-900 rounded-lg sahdow-lg p-12 flex flex-col justify-center items-center">
+              <div className="mb-8">
+                <img className="object-center object-cover rounded-full h-36 w-36" src="https://images.unsplash.com/photo-1499952127939-9bbf5af6c51c?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1176&q=80" alt="photo" />
+              </div>
+              <div className="text-center">
+                <p className="text-xl text-white font-bold mb-2">Jade Bradley</p>
+                <p className="text-base text-gray-400 font-normal">Dev Ops</p>
+              </div>
             </div>
           </div>
-          <div className="ml-4">
-            <button
-              className="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0"
-              onClick={handleSend}
-            >
-              <span>Send</span>
-              <span className="ml-2">
-                <svg
-                  className="w-4 h-4 transform rotate-45 -mt-px"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                  ></path>
-                </svg>
-              </span>
-            </button>
-          </div>
-        </div>
+        </section>
       </div>
     </div>
   );
